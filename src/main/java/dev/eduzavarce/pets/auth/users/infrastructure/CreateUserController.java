@@ -1,6 +1,6 @@
-package dev.eduzavarce.pets.users.infrastructure;
+package dev.eduzavarce.pets.auth.users.infrastructure;
 
-import dev.eduzavarce.pets.users.application.CreateUserService;
+import dev.eduzavarce.pets.auth.users.application.CreateUserService;
 import dev.eduzavarce.pets.shared.exceptions.ErrorResponse;
 import dev.eduzavarce.pets.shared.exceptions.ValidationErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Users", description = "Operations related to users")
 public class CreateUserController {
     private final CreateUserService createUserService;
+
     public CreateUserController(CreateUserService createUserService) {
         this.createUserService = createUserService;
     }

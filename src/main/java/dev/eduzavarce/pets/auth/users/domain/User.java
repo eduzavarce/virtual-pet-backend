@@ -1,4 +1,4 @@
-package dev.eduzavarce.pets.users.domain;
+package dev.eduzavarce.pets.auth.users.domain;
 
 import dev.eduzavarce.pets.shared.core.domain.AggregateRoot;
 
@@ -17,6 +17,14 @@ public class User extends AggregateRoot {
         this.role = role;
     }
 
+    private User(UserId id, Username username, UserEmail email, UserRole role) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.role = role;
+        this.password = null;
+    }
+
     public static User create(CreateUserDto createUserDto) {
         final UserId userId = new UserId(createUserDto.id());
         final Username username = new Username(createUserDto.username());
@@ -29,6 +37,14 @@ public class User extends AggregateRoot {
         return createdUser;
     }
 
+    public static User fromPrimitives(UserDto userDto) {
+        return new User(
+                new UserId(userDto.id()),
+                new Username(userDto.username()),
+                new UserEmail(userDto.email()),
+                UserRole.valueOf(userDto.role())
+        );
+    }
 
 
     public UserDto toPrimitives() {

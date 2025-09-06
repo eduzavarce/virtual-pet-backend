@@ -10,11 +10,11 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = UUIDValidator.class)
 @Documented
 public @interface ValidUUID {
-  String message() default "Invalid UUID format";
+    String message() default "Invalid UUID format";
 
-  Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 
-  boolean nullable() default false;
+    boolean nullable() default false;
 }

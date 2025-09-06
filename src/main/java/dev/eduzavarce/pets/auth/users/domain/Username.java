@@ -1,4 +1,4 @@
-package dev.eduzavarce.pets.users.domain;
+package dev.eduzavarce.pets.auth.users.domain;
 
 import dev.eduzavarce.pets.shared.core.domain.StringValueObject;
 
@@ -7,6 +7,7 @@ public class Username extends StringValueObject {
         super(value);
         validate(value);
     }
+
     private void validate(String value) {
         if (value == null || value.trim().isEmpty() || value.length() > 20) {
             throw new InvalidUserNameException("Invalid user name: " + value);

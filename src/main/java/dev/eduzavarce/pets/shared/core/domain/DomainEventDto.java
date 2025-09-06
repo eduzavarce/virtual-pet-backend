@@ -1,5 +1,6 @@
 package dev.eduzavarce.pets.shared.core.domain;
 
 public record DomainEventDto(
-        String eventName, String occurredOn, String aggregateId, Object body) {}
+        String eventName, String occurredOn, String aggregateId, Object body) {
+}
 

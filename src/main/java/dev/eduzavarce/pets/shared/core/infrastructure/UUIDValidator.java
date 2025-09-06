@@ -7,28 +7,28 @@ import java.util.UUID;
 
 public class UUIDValidator implements ConstraintValidator<ValidUUID, String> {
 
-  private boolean nullable;
+    private boolean nullable;
 
-  @Override
-  public void initialize(ValidUUID constraintAnnotation) {
-    this.nullable = constraintAnnotation.nullable();
-  }
-
-  @Override
-  public boolean isValid(String value, ConstraintValidatorContext context) {
-    if (value == null) {
-      return nullable;
+    @Override
+    public void initialize(ValidUUID constraintAnnotation) {
+        this.nullable = constraintAnnotation.nullable();
     }
 
-    if (value.trim().isEmpty()) {
-      return false;
-    }
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) {
+            return nullable;
+        }
 
-    try {
-      UUID.fromString(value);
-      return true;
-    } catch (IllegalArgumentException e) {
-      return false;
+        if (value.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            UUID.fromString(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
-  }
 }

@@ -1,4 +1,4 @@
-package dev.eduzavarce.pets.users.domain;
+package dev.eduzavarce.pets.auth.users.domain;
 
 import dev.eduzavarce.pets.shared.core.domain.StringValueObject;
 

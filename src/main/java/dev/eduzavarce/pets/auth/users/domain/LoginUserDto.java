@@ -1,4 +1,4 @@
-package dev.eduzavarce.pets.users.domain;
+package dev.eduzavarce.pets.auth.users.domain;
 
 public record LoginUserDto(String email, String password) {
 }

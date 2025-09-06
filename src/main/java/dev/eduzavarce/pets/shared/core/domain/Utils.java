@@ -1,4 +1,10 @@
 package dev.eduzavarce.pets.shared.core.domain;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
+import dev.eduzavarce.pets.shared.core.infrastructure.Slf4jLogger;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -7,13 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.CaseFormat;
-import dev.eduzavarce.pets.shared.core.infrastructure.Slf4jLogger;
-
 public final class Utils {
     private static final Slf4jLogger logger = new Slf4jLogger(Utils.class);
+
     public static String dateToString(LocalDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
     }

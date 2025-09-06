@@ -1,11 +1,11 @@
-package dev.eduzavarce.pets.users.infrastructure;
+package dev.eduzavarce.pets.auth.users.infrastructure;
 
 import dev.eduzavarce.pets.shared.core.infrastructure.ValidUUID;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Schema(name = "CreateUserRequest", description = "Payload to create a new user")
 public record CreateUserRequest(
@@ -35,7 +35,7 @@ public record CreateUserRequest(
         @Schema(description = "Password confirmation; must match password", example = "Str0ngP@ssw0rd!")
         String repeatPassword
 ) {
-    public CreateUserRequest{
+    public CreateUserRequest {
         if (!password.equals(repeatPassword)) {
             throw new IllegalArgumentException("Passwords do not match");
         }

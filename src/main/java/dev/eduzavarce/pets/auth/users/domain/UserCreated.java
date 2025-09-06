@@ -1,9 +1,10 @@
-package dev.eduzavarce.pets.users.domain;
+package dev.eduzavarce.pets.auth.users.domain;
 
 import dev.eduzavarce.pets.shared.core.domain.DomainEvent;
 
 public class UserCreated extends DomainEvent {
     private final String eventName;
+
     public UserCreated(String aggregateId, String name, Object body) {
         super(aggregateId, name, body);
         this.eventName = name;

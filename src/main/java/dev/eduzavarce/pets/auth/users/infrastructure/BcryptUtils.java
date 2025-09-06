@@ -1,9 +1,8 @@
-package dev.eduzavarce.pets.users.infrastructure;
+package dev.eduzavarce.pets.auth.users.infrastructure;
 
-import dev.eduzavarce.pets.users.domain.PasswordHasher;
+import dev.eduzavarce.pets.auth.users.domain.PasswordHasher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

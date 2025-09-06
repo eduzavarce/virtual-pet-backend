@@ -1,4 +1,4 @@
-package dev.eduzavarce.pets.users.infrastructure;
+package dev.eduzavarce.pets.auth.users.infrastructure;
 
 import dev.eduzavarce.pets.shared.core.domain.DomainEventDto;
 import dev.eduzavarce.pets.shared.core.domain.DomainEventListener;

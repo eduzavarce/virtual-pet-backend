@@ -15,18 +15,23 @@ spring:
       connection-timeout: 30000
   jpa:
     hibernate:
-        ddl-auto: update
+      ddl-auto: update
     show-sql: true
     properties:
-        hibernate:
-            format_sql: true
-            dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
-      host: ${RABBITMQ_HOST:localhost}
-      port: ${RABBITMQ_PORT:5672}
-      username: ${RABBITMQ_USER:guest}
-      password: ${RABBITMQ_PASSWORD:guest}
-      virtual-host: /
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: /
+
+security:
+  jwt:
+    secret-key: ${JWT_SECRET:ce5e82685b90de63d1548054beab3b5e691d257c07799db1d073002d34b6ac09}
+    expiration-time: ${JWT_EXPIRATION:3600000}
 
 app:
   rabbitmq:

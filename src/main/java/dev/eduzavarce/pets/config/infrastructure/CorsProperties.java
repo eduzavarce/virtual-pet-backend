@@ -14,18 +14,43 @@ public class CorsProperties {
     private List<String> exposedHeaders = new ArrayList<>();
     private boolean allowCredentials = true;
 
-    public List<String> getAllowedOrigins() { return allowedOrigins; }
-    public void setAllowedOrigins(List<String> allowedOrigins) { this.allowedOrigins = allowedOrigins; }
+    public List<String> getAllowedOrigins() {
+        return allowedOrigins;
+    }
 
-    public List<String> getAllowedMethods() { return allowedMethods; }
-    public void setAllowedMethods(List<String> allowedMethods) { this.allowedMethods = allowedMethods; }
+    public void setAllowedOrigins(List<String> allowedOrigins) {
+        this.allowedOrigins = allowedOrigins;
+    }
 
-    public List<String> getAllowedHeaders() { return allowedHeaders; }
-    public void setAllowedHeaders(List<String> allowedHeaders) { this.allowedHeaders = allowedHeaders; }
+    public List<String> getAllowedMethods() {
+        return allowedMethods;
+    }
 
-    public List<String> getExposedHeaders() { return exposedHeaders; }
-    public void setExposedHeaders(List<String> exposedHeaders) { this.exposedHeaders = exposedHeaders; }
+    public void setAllowedMethods(List<String> allowedMethods) {
+        this.allowedMethods = allowedMethods;
+    }
 
-    public boolean isAllowCredentials() { return allowCredentials; }
-    public void setAllowCredentials(boolean allowCredentials) { this.allowCredentials = allowCredentials; }
+    public List<String> getAllowedHeaders() {
+        return allowedHeaders;
+    }
+
+    public void setAllowedHeaders(List<String> allowedHeaders) {
+        this.allowedHeaders = allowedHeaders;
+    }
+
+    public List<String> getExposedHeaders() {
+        return exposedHeaders;
+    }
+
+    public void setExposedHeaders(List<String> exposedHeaders) {
+        this.exposedHeaders = exposedHeaders;
+    }
+
+    public boolean isAllowCredentials() {
+        return allowCredentials;
+    }
+
+    public void setAllowCredentials(boolean allowCredentials) {
+        this.allowCredentials = allowCredentials;
+    }
 }

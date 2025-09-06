@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter (
+    public JwtAuthenticationFilter(
             JwtService jwtService,
             UserDetailsService userDetailsService,
             HandlerExceptionResolver handlerExceptionResolver
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (userEmail != null && authentication != null) {
+            if (userEmail != null && authentication == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
                 if (jwtService.isTokenValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -66,8 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
 
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
 

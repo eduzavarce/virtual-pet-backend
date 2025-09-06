@@ -33,10 +33,19 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+        // add roles from authorities into JWT claims
+        claims.put("roles", userDetails.getAuthorities().stream()
+                .map(a -> a.getAuthority())
+                .toList());
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        // ensure roles claim exists if not provided
+        extraClaims.putIfAbsent("roles", userDetails.getAuthorities().stream()
+                .map(a -> a.getAuthority())
+                .toList());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 

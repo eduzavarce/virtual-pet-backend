@@ -7,13 +7,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +31,7 @@ public class CreateUserPutController {
     @Operation(
             summary = "Create a new user",
             description = "Creates a new user account. The id must be a UUID v4. The password must meet strength requirements.",
-            requestBody = @RequestBody(
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     description = "CreateUserRequest payload",
                     content = @Content(
@@ -52,7 +52,7 @@ public class CreateUserPutController {
     @ApiResponse(responseCode = "500", description = "Unexpected server error",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\n  \"message\": \"Internal server error\"\n}")))
-    public ResponseEntity<Void> createUser(@org.springframework.web.bind.annotation.RequestBody @Valid CreateUserRequest createUserRequest) {
+    public ResponseEntity<Void> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
         createUserService.createUser(createUserRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

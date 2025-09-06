@@ -2,6 +2,7 @@ package dev.eduzavarce.pets.config.infrastructure;
 
 import dev.eduzavarce.pets.auth.users.infrastructure.AuthUserRepository;
 import dev.eduzavarce.pets.config.domain.AuthenticationManagerException;
+import dev.eduzavarce.pets.shared.exceptions.AuthenticationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +25,7 @@ public class ApplicationConfiguration {
     @Bean
     UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new AuthenticationException("Invalid username or password"));
     }
 
     @Bean

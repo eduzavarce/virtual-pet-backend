@@ -1,8 +1,8 @@
 package dev.eduzavarce.pets.config.infrastructure;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,6 +45,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.PUT, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users/login").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
+                        .requestMatchers("/api/v1/backoffice/**").hasRole("ADMIN")
+
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 )

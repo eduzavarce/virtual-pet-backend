@@ -1,15 +1,11 @@
 package dev.eduzavarce.pets.auth.users.infrastructure;
 
-import dev.eduzavarce.pets.auth.users.domain.CreateUserDto;
-import dev.eduzavarce.pets.auth.users.domain.User;
-import dev.eduzavarce.pets.auth.users.domain.UserDto;
-import dev.eduzavarce.pets.auth.users.domain.UserEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import dev.eduzavarce.pets.auth.users.domain.*;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
@@ -26,6 +22,9 @@ public class UserPostgresEntity implements UserEntity, UserDetails {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.ROLE_USER;
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Timestamp createdAt;
@@ -38,6 +37,7 @@ public class UserPostgresEntity implements UserEntity, UserDetails {
         this.username = createUserDto.username();
         this.email = createUserDto.email();
         this.password = createUserDto.password();
+        this.role = UserRole.ROLE_USER;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
@@ -46,7 +46,7 @@ public class UserPostgresEntity implements UserEntity, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
@@ -61,6 +61,6 @@ public class UserPostgresEntity implements UserEntity, UserDetails {
 
     @Override
     public User toDomain() {
-        return User.fromPrimitives(new UserDto(id, username, email, password));
+        return User.fromPrimitives(new UserDto(id, username, email, role.name()));
     }
 }

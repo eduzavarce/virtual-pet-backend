@@ -1,11 +1,11 @@
 package dev.eduzavarce.pets.users.application;
 
+import dev.eduzavarce.pets.shared.core.domain.EventBus;
 import dev.eduzavarce.pets.shared.exceptions.AlreadyExistsException;
 import dev.eduzavarce.pets.users.domain.*;
 import dev.eduzavarce.pets.users.infrastructure.CreateUserRequest;
 import dev.eduzavarce.pets.users.infrastructure.UserPostgreEntity;
 import dev.eduzavarce.pets.users.infrastructure.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,11 +14,12 @@ import java.util.Optional;
 public class CreateUserService {
     private final PasswordHasher passwordHasher;
     private final UserRepository userRepository;
+    private final EventBus eventBus;
 
-
-    public CreateUserService(PasswordHasher passwordHasher, UserRepository userRepository) {
+    public CreateUserService(PasswordHasher passwordHasher, UserRepository userRepository, EventBus eventBus) {
         this.userRepository = userRepository;
         this.passwordHasher = passwordHasher;
+        this.eventBus = eventBus;
     }
     public void createUser(CreateUserRequest createUserRequest) {
         String hashedPassword = passwordHasher.hash(createUserRequest.password());
@@ -33,7 +34,7 @@ public class CreateUserService {
 
         User user = User.create(createUserDto);
         userRepository.save(new UserPostgreEntity(createUserDto));
-
+        eventBus.publish(user.pullDomainEvents());
     }
 
     private void ensureUserDosNotExist(CreateUserDto createUserDto) {

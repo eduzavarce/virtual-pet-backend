@@ -11,9 +11,9 @@ public abstract class DomainEvent {
 
     private final String occurredOn;
     private final String eventName;
-    private final Record body;
+    private final Object body;
 
-    protected DomainEvent(String aggregateId, String eventName, Record body) {
+    protected DomainEvent(String aggregateId, String eventName, Object body) {
         this.aggregateId = aggregateId;
         this.eventName = eventName;
         this.body = body;
@@ -24,11 +24,11 @@ public abstract class DomainEvent {
     public abstract String eventName();
 
     public DomainEventDto toPrimitives() {
-        return new dev.eduzavarce.pets.shared.core.domain.DomainEventDto(eventName, occurredOn, aggregateId, body);
+        return new DomainEventDto(eventName, occurredOn, aggregateId, body);
     }
 
     public abstract DomainEvent fromPrimitives(
-            String aggregateId, Record body, String eventId, String occurredOn);
+            String aggregateId, Object body, String eventId, String occurredOn);
 
     public String aggregateId() {
         return aggregateId;

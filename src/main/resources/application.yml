@@ -27,3 +27,10 @@ spring:
       username: ${RABBITMQ_USER:guest}
       password: ${RABBITMQ_PASSWORD:guest}
       virtual-host: /
+
+app:
+  rabbitmq:
+    exchange: ${RABBITMQ_EXCHANGE:domain-events}
+    routing-prefix: ${RABBITMQ_ROUTING_PREFIX:events}
+    queues:
+      user-created-log: ${RABBITMQ_QUEUE_USER_CREATED_LOG:user-created-log.q}

@@ -4,7 +4,7 @@ import dev.eduzavarce.pets.shared.core.domain.DomainEvent;
 
 public class UserCreated extends DomainEvent {
     private final String eventName;
-    public UserCreated(String aggregateId, String name, Record body) {
+    public UserCreated(String aggregateId, String name, Object body) {
         super(aggregateId, name, body);
         this.eventName = name;
     }
@@ -15,10 +15,8 @@ public class UserCreated extends DomainEvent {
     }
 
     @Override
-    public DomainEvent fromPrimitives(String aggregateId, Record body, String eventId, String occurredOn) {
-        if (!(body instanceof UserDto userDto)) {
-            throw new IllegalArgumentException("body is not a UserDto");
-        }
-        return new UserCreated(aggregateId, eventName, userDto);
+    public DomainEvent fromPrimitives(String aggregateId, Object body, String eventId, String occurredOn) {
+        // Accept any body representation (e.g., Map) without strict casting for logging use case
+        return new UserCreated(aggregateId, eventName, body);
     }
 }

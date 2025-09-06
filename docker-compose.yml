@@ -1,0 +1,38 @@
+services:
+  postgresql:
+    image: postgres:14.18
+    container_name: postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: pets
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_pets_data:/var/lib/postgresql/data
+    networks:
+      - pet-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq_pets_data:/var/lib/rabbitmq
+    networks:
+      - pet-network
+
+networks:
+  pet-network:
+    driver: bridge
+
+volumes:
+  postgresql_pets_data:
+  rabbitmq_pets_data:

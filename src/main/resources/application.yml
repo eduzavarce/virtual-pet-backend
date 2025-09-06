@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: pets
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:pets}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgrespassword}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 2000000
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+        ddl-auto: update
+    show-sql: true
+    properties:
+        hibernate:
+            format_sql: true
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+  rabbitmq:
+      host: ${RABBITMQ_HOST:localhost}
+      port: ${RABBITMQ_PORT:5672}
+      username: ${RABBITMQ_USER:guest}
+      password: ${RABBITMQ_PASSWORD:guest}
+      virtual-host: /

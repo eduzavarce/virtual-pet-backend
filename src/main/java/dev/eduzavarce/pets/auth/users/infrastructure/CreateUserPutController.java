@@ -13,21 +13,21 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @Tag(name = "Users", description = "Operations related to users")
-public class CreateUserController {
+public class CreateUserPutController {
     private final CreateUserService createUserService;
 
-    public CreateUserController(CreateUserService createUserService) {
+    public CreateUserPutController(CreateUserService createUserService) {
         this.createUserService = createUserService;
     }
 
-    @PostMapping
+    @PutMapping
     @Operation(
             summary = "Create a new user",
             description = "Creates a new user account. The id must be a UUID v4. The password must meet strength requirements.",

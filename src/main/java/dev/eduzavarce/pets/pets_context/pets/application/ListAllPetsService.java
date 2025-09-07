@@ -9,16 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class GetUserPetsService {
+public class ListAllPetsService {
     private final PetRepository petRepository;
 
-    public GetUserPetsService(PetRepository petRepository) {
+    public ListAllPetsService(PetRepository petRepository) {
         this.petRepository = petRepository;
     }
 
     @Transactional(readOnly = true)
-    public List<PetWithOwnerDto> execute(String userId) {
-        List<PetPostgresEntity> pets = petRepository.findByOwner_Id(userId);
+    public List<PetWithOwnerDto> execute() {
+        List<PetPostgresEntity> pets = petRepository.findAll();
         return pets.stream().map(p -> {
             var domain = p.toDomain();
             return new PetWithOwnerDto(

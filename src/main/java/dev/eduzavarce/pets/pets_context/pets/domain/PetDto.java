@@ -8,4 +8,5 @@ public record PetDto(
         int hunger,
         int stamina,
         PetType type
-) {}
+) {
+}

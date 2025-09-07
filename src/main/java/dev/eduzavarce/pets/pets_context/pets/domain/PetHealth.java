@@ -7,6 +7,7 @@ public class PetHealth extends IntValueObject {
         super(value);
         ensureRange(value);
     }
+
     private void ensureRange(Integer v) {
         if (v == null) throw new IllegalArgumentException("Health cannot be null");
         if (v < 0 || v > 100) throw new IllegalArgumentException("Health must be between 0 and 100");

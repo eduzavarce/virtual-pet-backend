@@ -31,21 +31,29 @@ public class PetsUserPostgresEntity extends PetsUserEntity {
 
     protected PetsUserPostgresEntity() {
     }
+
     private PetsUserPostgresEntity(String id, String username) {
         this.id = id;
         this.username = username;
     }
+
     public PetsUserPostgresEntity(PetUserDto petUser) {
         this.id = petUser.id();
         this.username = petUser.username();
     }
+
     @Override
     public PetUser toDomain() {
         return PetUser.fromPrimitives(new PetUserDto(id, username));
     }
 
-    public String getId() { return id; }
-    public String getUsername() { return username; }
+    public String getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     @Override
     public boolean equals(Object o) {

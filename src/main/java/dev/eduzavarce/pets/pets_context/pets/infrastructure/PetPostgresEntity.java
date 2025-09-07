@@ -40,7 +40,8 @@ public class PetPostgresEntity {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    protected PetPostgresEntity() {}
+    protected PetPostgresEntity() {
+    }
 
     public PetPostgresEntity(Pet pet, PetsUserPostgresEntity owner) {
         this.id = pet.getId();
@@ -56,6 +57,12 @@ public class PetPostgresEntity {
         return Pet.fromPrimitives(new PetDto(id, name, owner.getId(), health, hunger, stamina, type));
     }
 
-    public String getId() {return id;}
-    public PetsUserPostgresEntity getOwner() {return owner;}
+    public String getId() {
+        return id;
+    }
+
+    public PetsUserPostgresEntity getOwner() {
+        return owner;
+    }
+
 }

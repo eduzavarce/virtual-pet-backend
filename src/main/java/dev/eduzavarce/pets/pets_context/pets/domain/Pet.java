@@ -5,11 +5,11 @@ import dev.eduzavarce.pets.shared.core.domain.AggregateRoot;
 
 public class Pet extends AggregateRoot {
     private final PetId id;
-    private final PetName name;
+    private PetName name;
     private final UserId ownerId;
-    private final PetHealth health;
-    private final PetHunger hunger;
-    private final PetStamina stamina;
+    private  PetHealth health;
+    private  PetHunger hunger;
+    private  PetStamina stamina;
     private final PetType type;
 
     private Pet(String id, String name, String ownerId, int health, int hunger, int stamina, PetType type) {
@@ -35,12 +35,38 @@ public class Pet extends AggregateRoot {
     public PetDto toPrimitives() {
         return new PetDto(id.value(), name.value(), ownerId.value(), health.value(), hunger.value(), stamina.value(), type);
     }
+    public void rename(String newName) {
+        PetName updatedName = new PetName(newName);
+        if (!this.name.equals(updatedName)) {
+            this.name = updatedName;
+            this.record(new PetRenamed(this.id.value(), this.toPrimitives()));
+        }
+    }
+    public String getId() {
+        return id.value();
+    }
 
-    public String getId() { return id.value(); }
-    public String getName() { return name.value(); }
-    public String getOwnerId() { return ownerId.value(); }
-    public int getHealth() { return health.value(); }
-    public int getHunger() { return hunger.value(); }
-    public int getStamina() { return stamina.value(); }
-    public PetType getType() { return type; }
+    public String getName() {
+        return name.value();
+    }
+
+    public String getOwnerId() {
+        return ownerId.value();
+    }
+
+    public int getHealth() {
+        return health.value();
+    }
+
+    public int getHunger() {
+        return hunger.value();
+    }
+
+    public int getStamina() {
+        return stamina.value();
+    }
+
+    public PetType getType() {
+        return type;
+    }
 }

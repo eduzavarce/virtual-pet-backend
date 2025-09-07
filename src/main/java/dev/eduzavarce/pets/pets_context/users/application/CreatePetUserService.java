@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 public class CreatePetUserService {
     private final PetsUserRepository petsUserRepository;
     private final EventBus eventBus;
+
     public CreatePetUserService(PetsUserRepository petsUserRepository, EventBus eventBus) {
         this.eventBus = eventBus;
         this.petsUserRepository = petsUserRepository;
     }
+
     public void execute(UserDto body) {
         PetUserDto petUserDto = new PetUserDto(
                 body.id(),

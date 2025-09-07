@@ -20,12 +20,12 @@ public class PetUser extends AggregateRoot {
         return petUser;
     }
 
-    public PetUserDto toPrimitives() {
-        return new PetUserDto(this.id.value(), this.username.value());
-    }
-
     public static PetUser fromPrimitives(PetUserDto petUserDto) {
         return new PetUser(petUserDto.id(), petUserDto.username());
+    }
+
+    public PetUserDto toPrimitives() {
+        return new PetUserDto(this.id.value(), this.username.value());
     }
 
 }

@@ -9,4 +9,5 @@ public record PetWithOwnerDto(
         int hunger,
         int stamina,
         PetType type
-) {}
+) {
+}

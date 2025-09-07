@@ -3,7 +3,6 @@ package dev.eduzavarce.pets.pets_context.pets.infrastructure;
 import dev.eduzavarce.pets.auth.users.infrastructure.UserPostgresEntity;
 import dev.eduzavarce.pets.pets_context.pets.application.CreatePetService;
 import dev.eduzavarce.pets.pets_context.pets.domain.PetType;
-import dev.eduzavarce.pets.shared.core.domain.ResponseDto;
 import dev.eduzavarce.pets.shared.exceptions.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,7 +32,7 @@ public class CreatePetPutController {
     @Operation(
             summary = "Create a pet",
             description = "Creates a new pet for the authenticated user. Health, hunger and stamina start at 50.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = {@SecurityRequirement(name = "bearerAuth")}
     )
     @ApiResponse(responseCode = "201", description = "Pet created successfully")
     @ApiResponse(responseCode = "400", description = "Validation error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -51,5 +50,6 @@ public class CreatePetPutController {
             @Schema(example = "a1b2c3d4-e5f6-7890-abcd-ef0123456789") String id,
             @Schema(example = "Fluffy") String name,
             @Schema(description = "Pet type", example = "CAT", allowableValues = {"CAT", "RABBIT", "DOG", "CANARY"}) PetType type
-    ) {}
+    ) {
+    }
 }

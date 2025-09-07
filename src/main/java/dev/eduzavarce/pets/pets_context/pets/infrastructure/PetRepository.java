@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface PetRepository extends JpaRepository<PetPostgresEntity, String> {
     List<PetPostgresEntity> findByOwner_Id(String ownerId);
+
     Optional<PetPostgresEntity> findByIdAndOwner_Id(String id, String ownerId);
 }

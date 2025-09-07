@@ -16,7 +16,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -47,3 +47,41 @@ app:
     allowed-headers: [ "*" ]
     exposed-headers: [ ]
     allow-credentials: true
+
+# Write application logs to a file (ready for Loki tailing)
+logging:
+  file:
+    name: logs/pets-app.log
+  charset:
+    file: UTF-8
+    console: UTF-8
+
+# Enable Tomcat access logs in standard combined format
+server:
+  tomcat:
+    basedir: .
+    accesslog:
+      enabled: true
+      directory: logs
+      prefix: access
+      suffix: .log
+      pattern: combined
+      rotate: true
+      max-days: 14
+      request-attributes-enabled: true
+
+# Expose actuator endpoints and enable HTTP exchanges recording
+management:
+  server:
+    address: 127.0.0.1
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,httpexchanges
+  endpoint:
+    httpexchanges:
+      enabled: true
+  httpexchanges:
+    recording:
+      enabled: true

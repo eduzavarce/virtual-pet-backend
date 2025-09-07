@@ -36,4 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 /PROJECT_GUIDELINES.md
-/logs/pets-app.log
+/logs/*.log

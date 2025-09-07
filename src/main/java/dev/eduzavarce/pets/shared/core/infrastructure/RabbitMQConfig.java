@@ -21,6 +21,9 @@ public class RabbitMQConfig {
     @Value("${app.rabbitmq.queues.user-created-log:user-created-log.q}")
     private String userCreatedLogQueueName;
 
+    @Value("${app.rabbitmq.queues.user-created-pets:user-created-pets.q}")
+    private String userCreatedPetsQueueName;
+
     @Bean
     public TopicExchange domainEventsExchange() {
         return new TopicExchange(exchangeName, true, false);
@@ -32,10 +35,21 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue userCreatedPetsQueue() {
+        return QueueBuilder.durable(userCreatedPetsQueueName).build();
+    }
+
+    @Bean
     public Binding userCreatedLogBinding(TopicExchange domainEventsExchange, Queue userCreatedLogQueue) {
         // Match events.<any-aggregate-id>.user.created
         String pattern = String.format("%s.%s", routingPrefix, "#.user.created");
         return BindingBuilder.bind(userCreatedLogQueue).to(domainEventsExchange).with(pattern);
+    }
+
+    @Bean
+    public Binding userCreatedPetsBinding(TopicExchange domainEventsExchange, Queue userCreatedPetsQueue) {
+        String pattern = String.format("%s.%s", routingPrefix, "#.user.created");
+        return BindingBuilder.bind(userCreatedPetsQueue).to(domainEventsExchange).with(pattern);
     }
 
     @Bean

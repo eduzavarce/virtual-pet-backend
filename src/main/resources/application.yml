@@ -39,6 +39,7 @@ app:
     routing-prefix: ${RABBITMQ_ROUTING_PREFIX:events}
     queues:
       user-created-log: ${RABBITMQ_QUEUE_USER_CREATED_LOG:user-created-log.q}
+      user-created-pets: ${RABBITMQ_QUEUE_USER_CREATED_PETS:user-created-pets.q}
   cors:
     allowed-origins:
       - ${CORS_ALLOWED_ORIGINS:http://localhost:5173}

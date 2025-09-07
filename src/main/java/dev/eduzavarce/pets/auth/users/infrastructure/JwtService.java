@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,10 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -34,17 +39,15 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        // add roles from authorities into JWT claims
         claims.put("roles", userDetails.getAuthorities().stream()
-                .map(a -> a.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .toList());
         return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        // ensure roles claim exists if not provided
         extraClaims.putIfAbsent("roles", userDetails.getAuthorities().stream()
-                .map(a -> a.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .toList());
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }

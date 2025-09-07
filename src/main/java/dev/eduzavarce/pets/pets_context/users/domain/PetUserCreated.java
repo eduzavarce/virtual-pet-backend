@@ -1,11 +1,11 @@
-package dev.eduzavarce.pets.auth.users.domain;
+package dev.eduzavarce.pets.pets_context.users.domain;
 
 import dev.eduzavarce.pets.shared.core.domain.DomainEvent;
 
-public class UserCreated extends DomainEvent {
+public class PetUserCreated extends DomainEvent {
     private final String eventName;
 
-    public UserCreated(String aggregateId, String name, Object body) {
+    public PetUserCreated(String aggregateId, String name, Object body) {
         super(aggregateId, name, body);
         this.eventName = name;
     }
@@ -17,6 +17,6 @@ public class UserCreated extends DomainEvent {
 
     @Override
     public DomainEvent fromPrimitives(String aggregateId, Object body, String eventId, String occurredOn) {
-        return new UserCreated(aggregateId, eventName, body);
+        return new PetUserCreated(aggregateId, eventName, body);
     }
 }

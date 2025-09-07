@@ -24,7 +24,7 @@ public class UserPostgresEntity implements UserEntity, UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role = UserRole.ROLE_USER;
+    private UserRole role;
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Timestamp createdAt;
@@ -57,6 +57,10 @@ public class UserPostgresEntity implements UserEntity, UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class GetUserPetsService {
 
     @Transactional(readOnly = true)
     public List<PetWithOwnerDto> execute(String userId) {
-        List<PetPostgresEntity> pets = petRepository.findByOwner_Id(userId);
+        List<PetPostgresEntity> pets = petRepository.findByOwner_IdOrderByCreatedAtDesc(userId);
         return pets.stream().map(p -> {
             var domain = p.toDomain();
             return new PetWithOwnerDto(

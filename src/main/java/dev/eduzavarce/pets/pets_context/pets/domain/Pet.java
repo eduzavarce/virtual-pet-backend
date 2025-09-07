@@ -71,4 +71,24 @@ public class Pet extends AggregateRoot {
     public PetType getType() {
         return type;
     }
+
+    public void feed() {
+        this.hunger = this.hunger.feed();
+        // No new event defined; if desired, a PetFed event could be added in the future
+    }
+
+    public void play() {
+        if (this.stamina.isDepleted()) {
+            throw new LowStaminaException("Pet has no stamina to play");
+        }
+        if (this.hunger.isMaxed()) {
+            throw new TooHungryException("Pet is too hungry to play");
+        }
+        this.stamina = this.stamina.decreaseBy(10);
+        this.hunger = this.hunger.increaseBy(10);
+    }
+
+    public void sleep() {
+        this.stamina = this.stamina.increaseBy(30);
+    }
 }

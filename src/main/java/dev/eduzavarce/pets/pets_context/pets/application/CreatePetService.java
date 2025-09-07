@@ -22,12 +22,13 @@ public class CreatePetService {
     }
 
     @Transactional
-    public void execute(String id, String name, String ownerId, PetType type) {
-        PetDto dto = new PetDto(id, name, ownerId, 50, 50, 50, type);
-        Pet pet = Pet.create(dto);
-        PetsUserPostgresEntity owner = petsUserRepository.findById(ownerId)
-                .orElseThrow(() -> new NotFoundException("Owner (pets user) not found: " + ownerId));
-        PetPostgresEntity entity = new PetPostgresEntity(pet, owner);
-        petRepository.save(entity);
-    }
+    public Pet execute(String id, String name, String ownerId, PetType type) {
+            PetDto dto = new PetDto(id, name, ownerId, 50, 50, 50, type);
+            Pet pet = Pet.create(dto);
+            PetsUserPostgresEntity owner = petsUserRepository.findById(ownerId)
+                    .orElseThrow(() -> new NotFoundException("Owner (pets user) not found: " + ownerId));
+            PetPostgresEntity entity = new PetPostgresEntity(pet, owner);
+            petRepository.save(entity);
+            return pet;
+        }
 }

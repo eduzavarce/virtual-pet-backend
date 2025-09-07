@@ -144,6 +144,69 @@ Operational Notes
 - Avoid leaking passwords: toPrimitives() for User excludes password by design; treat hashing at the boundary (PasswordHasher)
 - For production hardening: replace ddl-auto=update with versioned migrations; configure RabbitMQ dead-letter queues and retry policies
 
+Authenticated Endpoints Pattern (JWT principal)
+- For private endpoints, never accept userId in path or query. Obtain the current user’s id from the authenticated principal populated by the JWT authentication filter.
+- Route conventions:
+  - Current user resources: use the collection path without "/me" when the resource is strictly scoped to the caller (e.g., GET /api/v1/pets returns the caller’s pets).
+  - If admin-only access to other users’ resources is required, expose a separate route and guard with role checks.
+- Security responsibilities:
+  - JwtAuthenticationFilter validates JWT via JwtService and loads a UserDetails through UserDetailsService.
+  - The principal is the UserPostgresEntity (implements UserDetails); use principal.getId() as the domain userId.
+  - Tokens include a userId claim for future-proofing.
+- Controller pattern:
+  - Inject the principal and pass its id to the application service:
+    - @GetMapping public List<Dto> getMine(@AuthenticationPrincipal UserPostgresEntity principal) { return service.execute(principal.getId()); }
+  - Controllers must not parse tokens or query persistence for identity.
+- Token issuance:
+  - LoginUserService sets roles claim; userId is included as claim and principal is loaded by email.
+- Authorization:
+  - Protect private routes with authenticated(). Use @PreAuthorize for role checks as needed.
+- DDD alignment:
+  - Infrastructure controllers read SecurityContext and pass primitives (userId) to application services.
+  - Application services remain framework-agnostic and accept primitives/DTOs.
+- Testing:
+  - Prefer controller slice tests with SecurityContext and mocked services.
+
+OpenAPI/Swagger Documentation Pattern
+- Use springdoc-openapi with Swagger UI already enabled (see SecurityConfiguration permits for /swagger-ui and /v3/api-docs).
+- Tag controllers by bounded context and resource (e.g., @Tag(name = "Users", description = "Operations related to users")).
+- Document operations with @Operation including summary, description, and security = @SecurityRequirement(name = "bearerAuth") for private endpoints.
+- Describe responses with @ApiResponse per status code:
+  - 2xx: provide schema or array schema for DTOs.
+  - 4xx/5xx: use ErrorResponse or ValidationErrorResponse as appropriate.
+- Controller Response Convention:
+  - Always return ResponseEntity<T> from controller methods to make status codes explicit and consistent across the app.
+  - Always wrap successful payloads in the generic ResponseDto<TPayload> class for consistency across the API (e.g., status + data). For collections, TPayload can be a List<...>.
+  - 201 Created with empty body: return ResponseEntity.status(HttpStatus.CREATED).build(); (see CreateUserPutController)
+  - 200 OK with payload: return ResponseEntity.ok(new ResponseDto<>("success", payload)); (see GetUserPetsController and LoginUserPostController)
+  - For 204 No Content: return ResponseEntity.noContent().build();
+  - Errors are standardized via GlobalExceptionHandler producing ErrorResponse/ValidationErrorResponse; controllers should not catch and wrap domain exceptions.
+- CreateUser (canonical) example:
+  - Class: @Tag(name = "Users"...)
+  - Method: @Operation(summary = "Create a new user", requestBody = ...), responses: 201, 400(ValidationErrorResponse), 409(ErrorResponse), 500(ErrorResponse).
+- Pets (current user) example:
+  - Class: @Tag(name = "Pets", description = "Operations related to pets of the authenticated user")
+  - Method: @Operation(summary = "Get my pets", description = "Returns the authenticated user's pets", security = @SecurityRequirement(name = "bearerAuth"))
+  - Responses: 200 -> List<PetWithOwnerDto>; 401 -> ErrorResponse; 500 -> ErrorResponse.
+- Login (public) example:
+  - Class: @Tag(name = "Users", description = "Operations related to users")
+  - Method: @Operation(summary = "Login user", requestBody with LoginUserRequest example) — no SecurityRequirement (public).
+  - Responses: 200 -> ResponseDto<LoginResponse>; 400 -> ValidationErrorResponse; 401 -> ErrorResponse; 500 -> ErrorResponse.
+  - Response examples: Document the concrete ResponseEntity<ResponseDto<LoginResponse>> body. Example success payload:
+    {
+      "status": "success",
+      "data": { "token": "<jwt>" }
+    }
+
+Guidance for documenting ResponseEntity<T>:
+- Always document the concrete shape of T in Swagger annotations (@Schema/@Content) and include realistic @ExampleObject payloads.
+- Do not leave generic placeholders like { "status": "string", "data": "string" } when T is a composite object; inspect T thoroughly and mirror its serialized form.
+- For wrappers like ResponseDto<TPayload>, provide an example for the wrapper and describe TPayload separately when useful.
+- Security scheme name must be "bearerAuth" to match the global components.securitySchemes; keep consistent across controllers.
+- Springdoc configuration: define a global HTTP bearer JWT security scheme once (OpenApiConfig), e.g.:
+  - new SecurityScheme().type(HTTP).scheme("bearer").bearerFormat("JWT") under components.securitySchemes["bearerAuth"].
+  - Add a global SecurityRequirement referencing "bearerAuth" so Swagger UI shows the Authorize button and locked padlocks on private endpoints.
+
 Appendix: Verified Test Example
 - A minimal domain test demonstrating the aggregate factory and event recording was executed locally during preparation:
   - User.create(CreateUserDto) produces a UserDto snapshot and a single UserCreated event with name "user.created"

@@ -10,14 +10,16 @@ public class Pet extends AggregateRoot {
     private final PetHealth health;
     private final PetHunger hunger;
     private final PetStamina stamina;
+    private final PetType type;
 
-    private Pet(String id, String name, String ownerId, int health, int hunger, int stamina) {
+    private Pet(String id, String name, String ownerId, int health, int hunger, int stamina, PetType type) {
         this.id = new PetId(id);
         this.name = new PetName(name);
         this.ownerId = new UserId(ownerId);
         this.health = new PetHealth(health);
         this.hunger = new PetHunger(hunger);
         this.stamina = new PetStamina(stamina);
+        this.type = type;
     }
 
     public static Pet create(PetDto dto) {
@@ -27,11 +29,11 @@ public class Pet extends AggregateRoot {
     }
 
     public static Pet fromPrimitives(PetDto dto) {
-        return new Pet(dto.id(), dto.name(), dto.ownerId(), dto.health(), dto.hunger(), dto.stamina());
+        return new Pet(dto.id(), dto.name(), dto.ownerId(), dto.health(), dto.hunger(), dto.stamina(), dto.type());
     }
 
     public PetDto toPrimitives() {
-        return new PetDto(id.value(), name.value(), ownerId.value(), health.value(), hunger.value(), stamina.value());
+        return new PetDto(id.value(), name.value(), ownerId.value(), health.value(), hunger.value(), stamina.value(), type);
     }
 
     public String getId() { return id.value(); }
@@ -40,4 +42,5 @@ public class Pet extends AggregateRoot {
     public int getHealth() { return health.value(); }
     public int getHunger() { return hunger.value(); }
     public int getStamina() { return stamina.value(); }
+    public PetType getType() { return type; }
 }

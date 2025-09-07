@@ -2,6 +2,7 @@ package dev.eduzavarce.pets.pets_context.pets.infrastructure;
 
 import dev.eduzavarce.pets.pets_context.pets.domain.Pet;
 import dev.eduzavarce.pets.pets_context.pets.domain.PetDto;
+import dev.eduzavarce.pets.pets_context.pets.domain.PetType;
 import dev.eduzavarce.pets.pets_context.users.infrastructure.PetsUserPostgresEntity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,6 +29,10 @@ public class PetPostgresEntity {
     @Column(nullable = false)
     private int stamina;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PetType type;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Timestamp createdAt;
@@ -44,10 +49,11 @@ public class PetPostgresEntity {
         this.health = pet.getHealth();
         this.hunger = pet.getHunger();
         this.stamina = pet.getStamina();
+        this.type = pet.getType();
     }
 
     public Pet toDomain() {
-        return Pet.fromPrimitives(new PetDto(id, name, owner.getId(), health, hunger, stamina));
+        return Pet.fromPrimitives(new PetDto(id, name, owner.getId(), health, hunger, stamina, type));
     }
 
     public String getId() {return id;}

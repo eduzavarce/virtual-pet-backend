@@ -6,5 +6,6 @@ public record PetDto(
         String ownerId,
         int health,
         int hunger,
-        int stamina
+        int stamina,
+        PetType type
 ) {}

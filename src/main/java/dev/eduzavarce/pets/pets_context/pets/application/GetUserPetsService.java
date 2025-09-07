@@ -19,14 +19,18 @@ public class GetUserPetsService {
     @Transactional(readOnly = true)
     public List<PetWithOwnerDto> execute(String userId) {
         List<PetPostgresEntity> pets = petRepository.findByOwner_Id(userId);
-        return pets.stream().map(p -> new PetWithOwnerDto(
+        return pets.stream().map(p -> {
+            var domain = p.toDomain();
+            return new PetWithOwnerDto(
                 p.getId(),
-                p.toDomain().getName(),
+                domain.getName(),
                 p.getOwner().getId(),
                 p.getOwner().getUsername(),
-                p.toDomain().getHealth(),
-                p.toDomain().getHunger(),
-                p.toDomain().getStamina()
-        )).toList();
+                domain.getHealth(),
+                domain.getHunger(),
+                domain.getStamina(),
+                domain.getType()
+            );
+        }).toList();
     }
 }

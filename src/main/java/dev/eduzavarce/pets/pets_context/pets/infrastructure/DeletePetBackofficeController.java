@@ -28,7 +28,7 @@ public class DeletePetBackofficeController {
     @Operation(
             summary = "Delete any pet by id",
             description = "Deletes the specified pet by id. Admin-only endpoint.",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = {@SecurityRequirement(name = "bearerAuth")}
     )
     @ApiResponse(responseCode = "204", description = "Pet deleted successfully")
     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))

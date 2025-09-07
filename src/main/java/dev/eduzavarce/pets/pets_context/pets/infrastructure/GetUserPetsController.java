@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,8 @@ import java.util.List;
 @RequestMapping("/api/v1/pets")
 @Tag(name = "Pets", description = "Operations related to pets of the authenticated user")
 public class GetUserPetsController {
+    private static final Logger log = LoggerFactory.getLogger(GetUserPetsController.class);
+
     private final GetUserPetsService getUserPetsService;
 
     public GetUserPetsController(GetUserPetsService getUserPetsService) {
@@ -49,7 +53,9 @@ public class GetUserPetsController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<ResponseDto<List<PetWithOwnerDto>>> getMine(@AuthenticationPrincipal UserPostgresEntity principal) {
         String userId = principal.getId();
+        log.info("[HTTP] GET /api/v1/pets - fetching pets for userId={}", userId);
         List<PetWithOwnerDto> pets = getUserPetsService.execute(userId);
+        log.debug("[HTTP] GET /api/v1/pets - {} pets fetched for userId={}", pets.size(), userId);
         ResponseDto<List<PetWithOwnerDto>> response = new ResponseDto<>("success", pets);
         return ResponseEntity.ok(response);
     }

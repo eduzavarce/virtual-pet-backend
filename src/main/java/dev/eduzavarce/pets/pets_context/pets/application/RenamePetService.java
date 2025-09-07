@@ -1,7 +1,6 @@
 package dev.eduzavarce.pets.pets_context.pets.application;
 
 import dev.eduzavarce.pets.pets_context.pets.domain.Pet;
-import dev.eduzavarce.pets.pets_context.pets.domain.PetDto;
 import dev.eduzavarce.pets.pets_context.pets.infrastructure.PetPostgresEntity;
 import dev.eduzavarce.pets.pets_context.pets.infrastructure.PetRepository;
 import dev.eduzavarce.pets.shared.exceptions.NotFoundException;

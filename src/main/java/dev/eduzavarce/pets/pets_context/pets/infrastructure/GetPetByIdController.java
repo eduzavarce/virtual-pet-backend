@@ -32,7 +32,7 @@ public class GetPetByIdController {
     @Operation(
             summary = "Get pet by id",
             description = "Returns a single pet that belongs to the authenticated user by its id. The user id is resolved from the authenticated principal (JWT).",
-            security = { @SecurityRequirement(name = "bearerAuth") }
+            security = {@SecurityRequirement(name = "bearerAuth")}
     )
     @ApiResponse(responseCode = "200", description = "Pet returned",
             content = @Content(

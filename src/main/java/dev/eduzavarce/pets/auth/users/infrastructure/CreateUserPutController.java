@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 @Tag(name = "Users", description = "Operations related to users")
 public class CreateUserPutController {
+    private static final Logger log = LoggerFactory.getLogger(CreateUserPutController.class);
+
     private final CreateUserService createUserService;
 
     public CreateUserPutController(CreateUserService createUserService) {
@@ -53,7 +57,9 @@ public class CreateUserPutController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\n  \"message\": \"Internal server error\"\n}")))
     public ResponseEntity<Void> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
+        log.info("[HTTP] PUT /api/v1/users - incoming create user request id={} email={}", createUserRequest.id(), createUserRequest.email());
         createUserService.createUser(createUserRequest);
+        log.info("[HTTP] PUT /api/v1/users - created user id={} email={}", createUserRequest.id(), createUserRequest.email());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

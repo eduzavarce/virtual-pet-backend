@@ -1,0 +1,50 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+positions:
+  filename: /tmp/positions.yaml
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+    external_labels:
+      environment: local
+scrape_configs:
+  - job_name: pets-app-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: pets
+          app: pets-app
+          __path__: /var/pets-logs/*.log
+    pipeline_stages:
+      - labeldrop:
+          - filename
+      - replace:
+          expression: "/var/pets-logs/.+"
+          replace: application
+          source: __path__
+          # adds a synthetic label 'stream'
+      - labels:
+          stream: extracted
+  - job_name: pets-access-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: pets-access
+          app: pets-app
+          __path__: /var/pets-logs/access*.log
+    pipeline_stages:
+      - labels:
+          stream: access
+  - job_name: pets-management-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: pets-management
+          app: pets-app
+          __path__: /var/pets-logs/management_*.log
+    pipeline_stages:
+      - labels:
+          stream: management

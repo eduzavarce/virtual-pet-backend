@@ -29,6 +29,60 @@ services:
     networks:
       - pet-network
 
+  loki:
+    image: grafana/loki:2.9.8
+    container_name: loki
+    command: -config.file=/etc/loki/config/loki-config.yml
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+      - ./config/loki:/etc/loki/config:ro
+    networks:
+      - pet-network
+
+  promtail:
+    image: grafana/promtail:2.9.8
+    container_name: promtail
+    command: -config.file=/etc/promtail/config/promtail-config.yml
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./config/promtail:/etc/promtail/config:ro
+      - ./logs:/var/pets-logs:ro
+    networks:
+      - pet-network
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:10.3.3
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - pet-network
+    depends_on:
+      - loki
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus:/etc/prometheus:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - pet-network
+
 networks:
   pet-network:
     driver: bridge
@@ -36,3 +90,5 @@ networks:
 volumes:
   postgresql_pets_data:
   rabbitmq_pets_data:
+  loki_data:
+  grafana_data:

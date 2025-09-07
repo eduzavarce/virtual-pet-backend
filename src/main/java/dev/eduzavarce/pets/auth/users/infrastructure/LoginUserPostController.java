@@ -11,8 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users/login")
 @Tag(name = "Users", description = "Operations related to users")
 public class LoginUserPostController {
-    private static final Logger log = LoggerFactory.getLogger(LoginUserPostController.class);
-
     private final LoginUserService service;
 
     public LoginUserPostController(LoginUserService service) {
@@ -66,9 +62,7 @@ public class LoginUserPostController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\n  \"message\": \"Internal server error\"\n}")))
     public ResponseEntity<ResponseDto<LoginResponse>> execute(@RequestBody @Valid LoginUserRequest request) {
-        log.info("[HTTP] POST /api/v1/users/login - login attempt for subject={}", request.email());
         String token = service.login(request.email(), request.password());
-        log.info("[HTTP] POST /api/v1/users/login - login successful for subject={}", request.email());
         return ResponseEntity.ok(new ResponseDto<>("success", new LoginResponse(token)));
     }
 }

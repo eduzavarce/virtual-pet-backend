@@ -3,8 +3,6 @@ package dev.eduzavarce.pets.auth.users.application;
 import dev.eduzavarce.pets.auth.users.infrastructure.JwtService;
 import dev.eduzavarce.pets.auth.users.infrastructure.UserPostgresEntity;
 import dev.eduzavarce.pets.shared.exceptions.AuthenticationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,8 +14,6 @@ import java.util.Map;
 
 @Service
 public class LoginUserService {
-    private static final Logger log = LoggerFactory.getLogger(LoginUserService.class);
-
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
@@ -28,26 +24,20 @@ public class LoginUserService {
 
     public String login(String usernameOrEmail, String password) {
         try {
-            log.info("[Login] Attempting authentication for subject={}", usernameOrEmail);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(usernameOrEmail, password)
             );
             Object principal = authentication.getPrincipal();
             if (!(principal instanceof UserDetails userDetails)) {
-                log.warn("[Login] Authentication returned non-UserDetails principal for subject={}", usernameOrEmail);
                 throw new AuthenticationException("Invalid username or password");
             }
             Map<String, Object> claims = new HashMap<>();
             // Include userId claim when principal is our entity
             if (principal instanceof UserPostgresEntity userEntity) {
                 claims.put("userId", userEntity.getId());
-                log.debug("[Login] Adding userId claim for subject={} userId={}", usernameOrEmail, userEntity.getId());
             }
-            String token = jwtService.generateToken(claims, userDetails);
-            log.info("[Login] Authentication successful for subject={}", usernameOrEmail);
-            return token;
+            return jwtService.generateToken(claims, userDetails);
         } catch (org.springframework.security.core.AuthenticationException ex) {
-            log.warn("[Login] Invalid credentials for subject={}", usernameOrEmail);
             throw new AuthenticationException("Invalid username or password");
         }
     }

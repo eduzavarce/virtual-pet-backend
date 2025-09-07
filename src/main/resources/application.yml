@@ -28,15 +28,6 @@ spring:
     password: ${RABBITMQ_PASSWORD:guest}
     virtual-host: /
 
-logging:
-  level:
-    root: INFO
-    dev.eduzavarce.pets: DEBUG
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %5p %c{1} - %m%n"
-  file:
-    name: logs/pets-app.log
-
 security:
   jwt:
     secret-key: ${JWT_SECRET:ce5e82685b90de63d1548054beab3b5e691d257c07799db1d073002d34b6ac09}

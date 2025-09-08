@@ -50,7 +50,7 @@ public class CreatePetPutController {
     @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "500", description = "Unexpected server error", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<ResponseDto<PetWithOwnerDto>> create(@AuthenticationPrincipal UserPostgresEntity principal,
-                                       @RequestBody CreatePetRequest request) {
+                                                               @RequestBody CreatePetRequest request) {
         String ownerId = principal.getId();
         var pet = createPetService.execute(request.id(), request.name(), ownerId, request.type());
         // fetch owner username from repository to build response consistently

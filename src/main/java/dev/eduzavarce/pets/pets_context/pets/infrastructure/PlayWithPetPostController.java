@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.eduzavarce.pets.pets_context.pets.infrastructure.PetRepository;
-
 @RestController
 @RequestMapping("/api/v1/pets")
 @Tag(name = "Pets", description = "Operations related to pets of the authenticated user")

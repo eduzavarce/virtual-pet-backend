@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -70,7 +70,9 @@ class CreatePetPutControllerIntegrationTest {
                 .build();
     }
 
-    private String json(Object o) throws Exception { return objectMapper.writeValueAsString(o); }
+    private String json(Object o) throws Exception {
+        return objectMapper.writeValueAsString(o);
+    }
 
     @Test
     @DisplayName("201 OK with ResponseDto and PetWithOwnerDto on successful creation")

@@ -16,7 +16,6 @@ public class DeletePetService {
 
     @Transactional
     public void execute(String petId, String ownerId) {
-        // We enforce ownership by querying with both id and ownerId
         PetPostgresEntity entity = petRepository.findByIdAndOwner_Id(petId, ownerId)
                 .orElseThrow(() -> new NotFoundException("Pet not found"));
         petRepository.delete(entity);

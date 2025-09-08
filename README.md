@@ -1,14 +1,31 @@
-Pets Application (DDD, Spring Boot)
+# Pets Application (DDD, Spring Boot) ✨
 
-Overview
+## Table of Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Quick Start (Docker Compose) 🚀](#quick-start-docker-compose-)
+- [Local Development Without Docker](#local-development-without-docker)
+- [Build, Test, Package](#build-test-package)
+- [Configuration (application.yml highlights)](#configuration-applicationyml-highlights)
+- [Architecture (DDD) 🧩](#architecture-ddd-)
+- [Canonical DDD Flow: CreateUser](#canonical-ddd-flow-createuser)
+- [API Usage Examples](#api-usage-examples)
+- [Security and Authenticated Endpoints](#security-and-authenticated-endpoints)
+- [Testing Strategy](#testing-strategy)
+- [Observability & Monitoring (Grafana + Prometheus + Loki) 📊🛠️](#observability--monitoring-grafana--prometheus--loki-)
+- [Troubleshooting 🧰](#troubleshooting-)
+- [Where to Look in the Code](#where-to-look-in-the-code)
+- [License](#license)
+
+## Overview
 
 - Pets is a Domain-Driven Design (DDD) sample application built with Java 21 and Spring Boot. It models two bounded
   contexts:
     - Auth (Users): user registration, login, JWT security, domain events.
     - Pets: pet management for the authenticated user.
-- Cross-cutting infrastructure includes PostgreSQL, RabbitMQ, logging, and OpenAPI/Swagger UI.
+- Cross-cutting infrastructure includes PostgreSQL, RabbitMQ, logging, OpenAPI/Swagger UI, and full Observability via Grafana + Prometheus + Loki/Promtail. 📊📈
 
-Prerequisites
+## Prerequisites
 
 - Java: JDK 21 (Gradle toolchain uses Java 21).
 - Build: Gradle Wrapper (included).
@@ -17,7 +34,7 @@ Prerequisites
     - RabbitMQ
 - Optional: Docker and Docker Compose (recommended for local env).
 
-Quick Start (Docker Compose)
+## Quick Start (Docker Compose) 🚀
 
 - Copy or export environment variables as needed (defaults work out of the box for local use):
     - POSTGRES_HOST=localhost, POSTGRES_PORT=5432, POSTGRES_DB=pets
@@ -25,29 +42,71 @@ Quick Start (Docker Compose)
     - RABBITMQ_HOST=localhost, RABBITMQ_PORT=5672, RABBITMQ_USER=guest, RABBITMQ_PASSWORD=guest
     - JWT_SECRET=dev-secret-please-change, JWT_EXPIRATION=3600000
 - Start infrastructure (and optionally app if configured) via docker-compose:
-    - docker-compose up -d
-- Build and run the app:
-    - ./gradlew clean build
-    - ./gradlew bootRun
-- Swagger UI: http://localhost:8080/swagger-ui/index.html
 
-Local Development Without Docker
+```bash
+docker-compose up -d
+```
+
+- Build and run the app:
+
+```bash
+./gradlew clean build
+./gradlew bootRun
+```
+
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- Observability:
+  - Grafana: http://localhost:3000 (default admin/admin)
+  - Prometheus: http://localhost:9090
+  - Loki (API): http://localhost:3100
+  - Promtail (status): http://localhost:9080
+  - RabbitMQ UI: http://localhost:15672 (guest/guest)
+
+## Local Development Without Docker
 
 - Ensure PostgreSQL and RabbitMQ are running locally.
 - Configure environment variables or rely on defaults from src/main/resources/application.yml.
-- Build: ./gradlew clean build (use -x test to skip tests locally)
-- Run (dev): ./gradlew bootRun
+- Build:
+```bash
+./gradlew clean build
+```
+- Build (skip tests):
+```bash
+./gradlew clean build -x test
+```
+- Run (dev):
+```bash
+./gradlew bootRun
+```
 
-Build, Test, Package
+## Build, Test, Package
 
-- Build (runs tests): ./gradlew clean build
-- Skip tests: ./gradlew clean build -x test
-- Run (dev): ./gradlew bootRun
-- Tests: ./gradlew test
-- Run one test: ./gradlew test --tests "dev.eduzavarce.pets.auth.users.domain.UserDomainTest"
-- Package JAR: ./gradlew bootJar
+- Build (runs tests):
+```bash
+./gradlew clean build
+```
+- Skip tests:
+```bash
+./gradlew clean build -x test
+```
+- Run (dev):
+```bash
+./gradlew bootRun
+```
+- Tests:
+```bash
+./gradlew test
+```
+- Run one test:
+```bash
+./gradlew test --tests "dev.eduzavarce.pets.auth.users.domain.UserDomainTest"
+```
+- Package JAR:
+```bash
+./gradlew bootJar
+```
 
-Configuration (application.yml highlights)
+## Configuration (application.yml highlights)
 
 - Database (PostgreSQL)
     - spring.datasource.url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:pets}
@@ -66,7 +125,7 @@ Configuration (application.yml highlights)
 - CORS
     - app.cors.allowed-origins: defaults to http://localhost:5173 (adjust to your UI).
 
-Architecture (DDD)
+## Architecture (DDD) 🧩
 
 - Layers
     - Domain: Pure business logic, Value Objects, Aggregates, Domain Events. No framework dependencies.
@@ -76,7 +135,7 @@ Architecture (DDD)
     - EventBus abstraction with RabbitMqEventBus implementation.
     - Global exception handling producing standardized error payloads.
 
-Canonical DDD Flow Example: CreateUser
+## Canonical DDD Flow: CreateUser
 
 - Goal: Demonstrate end-to-end flow for the Users (Auth) context using CreateUser as the canonical pattern.
 - Request (Infrastructure)
@@ -114,44 +173,95 @@ Canonical DDD Flow Example: CreateUser
 - Output
     - Controller returns 201 Created with empty body on success.
 
-API Usage Examples
+## API Usage Examples
 
 - Create User
-    - curl -X PUT http://localhost:8080/api/v1/users \
-      -H "Content-Type: application/json" \
-      -d '{
-      "id": "9a5c9f1e-8a04-4f8e-9a5a-9a5c9f1e8a04",
-      "username": "alice",
-      "email": "alice@example.com",
-      "password": "S3cr3t!pass"
-      }'
-    - Response: 201 Created (empty body). On validation errors, a ValidationErrorResponse is returned by
-      GlobalExceptionHandler.
-- Login (get JWT)
-    - curl -X POST http://localhost:8080/api/v1/users/login \
-      -H "Content-Type: application/json" \
-      -d '{ "email": "alice@example.com", "password": "S3cr3t!pass" }'
-    - Response 200 OK: { "status": "success", "data": { "token": "<jwt>" } }
-- Get My Pets (requires Authorization: Bearer <jwt>)
-    - curl http://localhost:8080/api/v1/pets -H "Authorization: Bearer <jwt>"
-    - Response 200 OK: ResponseDto<List<PetWithOwnerDto>>
+```bash
+curl -X PUT http://localhost:8080/api/v1/users \
+  -H "Content-Type: application/json" \
+  -d '{
+  "id": "9a5c9f1e-8a04-4f8e-9a5a-9a5c9f1e8a04",
+  "username": "alice",
+  "email": "alice@example.com",
+  "password": "S3cr3t!pass"
+  }'
+```
+Response: 201 Created (empty body). On validation errors, a ValidationErrorResponse is returned by GlobalExceptionHandler.
 
-Security and Authenticated Endpoints
+- Login (get JWT)
+```bash
+curl -X POST http://localhost:8080/api/v1/users/login \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "alice@example.com", "password": "S3cr3t!pass" }'
+```
+Example success response:
+```json
+{ "status": "success", "data": { "token": "<jwt>" } }
+```
+
+- Get My Pets (requires Authorization: Bearer <jwt>)
+```bash
+curl http://localhost:8080/api/v1/pets -H "Authorization: Bearer <jwt>"
+```
+Response 200 OK: ResponseDto<List<PetWithOwnerDto>>
+
+## Security and Authenticated Endpoints
 
 - Controllers obtain the authenticated principal via @AuthenticationPrincipal UserPostgresEntity and pass
   principal.getId() to services.
 - JWT is validated by JwtAuthenticationFilter and JwtService; tokens include userId and roles.
 
-Testing Strategy
+## Testing Strategy
 
 - Domain tests: fast, pure domain (no Spring). Example flow: create a valid CreateUserDto, call User.create(dto), assert
   toPrimitives() and that pullDomainEvents() contains one UserCreated with eventName "user.created".
 - Application tests: mock PasswordHasher, repositories, EventBus; assert orchestration and invariants.
 - Infrastructure tests: optional; prefer slices (@DataJpaTest) or Testcontainers when not using docker-compose.
-- Run all tests: ./gradlew test
-- Run one class: ./gradlew test --tests "dev.eduzavarce.pets.auth.users.domain.UserDomainTest"
+- Run all tests:
+```bash
+./gradlew test
+```
+- Run one class:
+```bash
+./gradlew test --tests "dev.eduzavarce.pets.auth.users.domain.UserDomainTest"
+```
 
-Troubleshooting
+## Observability & Monitoring (Grafana + Prometheus + Loki) 📊🛠️
+
+- Stack Components
+    - Grafana (UI) on :3000 with pre-provisioned datasources for Loki (logs) and Prometheus (metrics).
+    - Prometheus on :9090 scraping the app's Actuator metrics.
+    - Loki on :3100 storing logs.
+    - Promtail on :9080 tailing local log files from ./logs and shipping to Loki.
+- How it works
+    - Metrics: Spring Boot Actuator exposes /actuator/prometheus; Prometheus scrapes it every 15s.
+    - Logs: The app writes to logs/*.log; Promtail reads those files and pushes to Loki with labels app=pets-app, job=...
+- Quick Start
+```bash
+docker-compose up -d grafana prometheus loki promtail
+```
+- Open Grafana: http://localhost:3000 (user: admin, password: admin)
+- Explore logs: Grafana -> Explore -> Data source: Loki -> enter query:
+```logql
+{app="pets-app"}
+```
+Then filter by stream label (access/management/extracted) as needed.
+- Explore metrics: Grafana -> Explore -> Data source: Prometheus -> try:
+```promql
+http_server_requests_seconds_count
+jvm_memory_used_bytes
+process_cpu_usage
+```
+- Dashboards (suggested)
+    - Import common IDs from Grafana.com:
+        - JVM (Micrometer): 4701
+        - Spring Boot Statistics: 10280 or 12900
+    - Or build custom dashboards using the pre-provisioned datasources.
+- Prometheus target
+    - Configured to scrape host.docker.internal:8081 by default (see config/prometheus/prometheus.yml). Ensure the app exposes /actuator/prometheus on 8081 or adjust the target to match your runtime port.
+- Log paths
+    - Promtail reads from /var/pets-logs/*.log which is mapped to ./logs via docker-compose. Ensure logs exist; they will appear once the app runs and writes logs.
+## Troubleshooting 🧰
 
 - Ports in use
     - PostgreSQL default 5432; RabbitMQ default 5672; App default 8080.
@@ -163,7 +273,7 @@ Troubleshooting
 - CORS
     - Adjust app.cors.allowed-origins if your UI runs on a different host/port.
 
-Where to Look in the Code
+## Where to Look in the Code
 
 - CreateUser (canonical):
     - Controller: src/main/java/dev/eduzavarce/pets/auth/users/infrastructure/CreateUserPutController.java
@@ -172,6 +282,6 @@ Where to Look in the Code
     - Event Bus: src/main/java/dev/eduzavarce/pets/shared/core/infrastructure/RabbitMqEventBus.java
     - RabbitMQ Config: src/main/java/dev/eduzavarce/pets/shared/core/infrastructure/RabbitMQConfig.java
 
-License
+## License
 
 - MIT or project-specific (update as appropriate).
